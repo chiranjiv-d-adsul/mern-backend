@@ -1,2 +1,3 @@
 .env
-nodes_modules
+node_modules
+t
