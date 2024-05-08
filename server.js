@@ -8,23 +8,15 @@ const fs = require('fs');
 const multer = require('multer');
 const { google } = require('googleapis');
 const path = require('path');
-require('dotenv').config();
-
 // const PDFDocument = require('pdfkit');
 // const streamBuffers = require('stream-buffers');
 
-const MONGO_URI = process.env.MONGO_URI;
-const BASE_URL = process.env.BASE_URL;
-const CLIENT_ID = process.env.CLIENT_ID;
-const CLIENT_SECRET = process.env.CLIENT_SECRET;
-const REDIRECT_URI = process.env.REDIRECT_URI;
-const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 
 
-// const CLIENT_ID = '726051956914-lp8j983g11fnsa96iffd3fhndvs2e23t.apps.googleusercontent.com';
-// const CLIENT_SECRET = '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';
-// const REDIRECT_URI = 'https://developers.google.com/oauthplayground'; // OAuth 2.0 redirect URI
-// const REFRESH_TOKEN = '1//04zjrV2ZznnPRCgYIARAAGAQSNwF-L9Ir4OGUsBv7dDVSFw-TSQzUGnG5N4aHlqjCvL2-kWrhenPXUbywb3lQ32NpkVzgxc0Lv_Y';
+const CLIENT_ID = '726051956914-lp8j983g11fnsa96iffd3fhndvs2e23t.apps.googleusercontent.com';
+const CLIENT_SECRET = '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';
+const REDIRECT_URI = 'https://developers.google.com/oauthplayground'; // OAuth 2.0 redirect URI
+const REFRESH_TOKEN = '1//04zjrV2ZznnPRCgYIARAAGAQSNwF-L9Ir4OGUsBv7dDVSFw-TSQzUGnG5N4aHlqjCvL2-kWrhenPXUbywb3lQ32NpkVzgxc0Lv_Y';
 // Refresh token
 
 const oauth2Client = new google.auth.OAuth2(
@@ -105,21 +97,21 @@ async function generatePublicUrl(fileId) {
   }
 }
 
-// async function generatePublicUrl(certificateId) {
-//   try {
-//     const fileId = '1QZ-flNFmEdQ8k6Lf2QK29CtUEjJmtQ6n';
-//     const result = await drive.files.get({
-//       fileId: fileId,
-//       fields: 'webViewLink, webContentLink',
-//     });
-//     const driveLink = result.data.webViewLink; // Assuming you want to use the webViewLink
-//     console.log(driveLink);
-//     // Call the function to store the Drive link in the database
-//     await storeDriveLinkInDB(certificateId, driveLink);
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// }
+async function generatePublicUrl(certificateId) {
+  try {
+    const fileId = '1QZ-flNFmEdQ8k6Lf2QK29CtUEjJmtQ6n';
+    const result = await drive.files.get({
+      fileId: fileId,
+      fields: 'webViewLink, webContentLink',
+    });
+    const driveLink = result.data.webViewLink; // Assuming you want to use the webViewLink
+    console.log(driveLink);
+    // Call the function to store the Drive link in the database
+    await storeDriveLinkInDB(certificateId, driveLink);
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 
 const app = express();
 app.use(cors(
@@ -140,7 +132,7 @@ const upload = multer({ dest: 'uploads/' });
 
 
 
-// const MONGO_URI = 'mongodb+srv://chiranjiv:EXnSTebRwyIBpcuA@cluster0.c9wga1l.mongodb.net/certificatedetails?retryWrites=true&w=majority';
+const MONGO_URI = 'mongodb+srv://chiranjiv:EXnSTebRwyIBpcuA@cluster0.c9wga1l.mongodb.net/certificatedetails?retryWrites=true&w=majority';
 
 mongoose.connect(MONGO_URI, {
 }).then(() => {
@@ -423,27 +415,27 @@ async function streamToBuffer(stream) {
   });
 }
 // Define the storeDriveLinkInDB function outside the route handler
-// async function storeDriveLinkInDB(certificateId, driveLink) {
-//   try {
-//     // Find the certificate by ID
-//     const certificate = await modelData.findById(certificateId);
+async function storeDriveLinkInDB(certificateId, driveLink) {
+  try {
+    // Find the certificate by ID
+    const certificate = await modelData.findById(certificateId);
 
-//     if (!certificate) {
-//       throw new Error('Certificate not found');
-//     }
+    if (!certificate) {
+      throw new Error('Certificate not found');
+    }
 
-//     // Update the certificate with the Drive link
-//     certificate.driveLink = driveLink;
+    // Update the certificate with the Drive link
+    certificate.driveLink = driveLink;
 
-//     // Save the updated certificate
-//     await certificate.save();
+    // Save the updated certificate
+    await certificate.save();
 
-//     console.log('Drive link stored successfully:', certificate.driveLink);
-//   } catch (error) {
-//     console.error('Error storing Drive link:', error);
-//     throw error;
-//   }
-// }
+    console.log('Drive link stored successfully:', certificate.driveLink);
+  } catch (error) {
+    console.error('Error storing Drive link:', error);
+    throw error;
+  }
+}
 
 
 
